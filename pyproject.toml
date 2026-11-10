@@ -25,6 +25,7 @@ skrl = ["skrl"]
 sb3 = ["stable-baselines3"]
 rl-games = ["rl_games"]
 vla = ["lerobot", "h5py", "opencv-python"]
+docs = ["mkdocs", "mkdocs-material"]
 all = [
     "isaacsim==6.2.0.0",
     "ovphysx",
@@ -35,6 +36,8 @@ all = [
     "lerobot",
     "h5py",
     "opencv-python",
+    "mkdocs",
+    "mkdocs-material",
 ]
 
 [project.entry-points."isaaclab.tasks"]
