@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robot-learning"
+version = "0.1.0"
+description = "Thin uv-based front end over Isaac Lab 3.0 + Isaac Sim 6.2 + MuJoCo-Warp (Newton) for RL on an HP Omen laptop"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Pana1v", email = "praajarpit@gmail.com" }]
+keywords = ["isaaclab", "isaac-sim", "mujoco-warp", "newton", "rl"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+video = []
+isaacsim = ["isaacsim==6.2.0.0"]
+ovphysx = ["ovphysx"]
+rsl-rl = ["rsl_rl"]
+skrl = ["skrl"]
+sb3 = ["stable-baselines3"]
+rl-games = ["rl_games"]
+all = [
+    "isaacsim==6.2.0.0",
+    "ovphysx",
+    "rsl_rl",
+    "skrl",
+    "stable-baselines3",
+    "rl_games",
+]
+
+[tool.setuptools]
+packages = []
