@@ -1,12 +1,25 @@
-/IsaacLab/
-/logs/
-/runs/
-/outputs/
-.venv/
-venv/
+# Training artifacts & telemetry
+logs/
+*.pt
+*.pth
+*.onnx
+*.tfevents*
+
+# Python & UV caches
 __pycache__/
 *.py[cod]
-.pytest_cache/
-.env
-.env.*
+*$py.class
+.venv/
+.uv/
+.cache/
+
+# Isaac Lab internal build artifacts
+IsaacLab/.venv/
+IsaacLab/build/
+IsaacLab/dist/
+
+# System / IDE
 .DS_Store
+.idea/
+.vscode/
+*.swp

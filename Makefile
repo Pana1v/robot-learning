@@ -52,6 +52,12 @@ host: ## one-time sudo setup: 20 GB swap + Docker GPU runtime
 sync: ## install kit-less Isaac Lab (Newton + MuJoCo-Warp, PyTorch cu130). EXTRAS="all video" to add more
 	cd $(LAB) && uv sync --extra video $(foreach e,$(EXTRAS),--extra $(e))
 
+clean-logs: ## clear all local checkpoints and tensorboard logs
+	rm -rf logs/*
+
+check-cuda: ## quick verification of CUDA GPU runtime & memory status
+	@nvidia-smi --query-gpu=name,memory.total,memory.free,driver_version --format=csv
+
 sync-sim: ## add Isaac Sim 6.2 (pip, ~15 GB) on top of the kit-less env
 	cd $(LAB) && uv sync --extra video --extra isaacsim $(foreach e,$(EXTRAS),--extra $(e))
 
