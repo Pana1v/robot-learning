@@ -24,6 +24,7 @@ rsl-rl = ["rsl_rl"]
 skrl = ["skrl"]
 sb3 = ["stable-baselines3"]
 rl-games = ["rl_games"]
+vla = ["lerobot", "h5py", "opencv-python"]
 all = [
     "isaacsim==6.2.0.0",
     "ovphysx",
@@ -31,7 +32,14 @@ all = [
     "skrl",
     "stable-baselines3",
     "rl_games",
+    "lerobot",
+    "h5py",
+    "opencv-python",
 ]
 
+[project.entry-points."isaaclab.tasks"]
+my-robot-tasks = "my_robot_tasks"
+
 [tool.setuptools]
-packages = []
+package-dir = {"" = "."}
+packages = ["my_robot_tasks", "my_robot_tasks.*"]
