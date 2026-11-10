@@ -1,0 +1,51 @@
+site_name: robot-learning
+site_description: Thin uv-based front end over Isaac Lab 3.0 + Isaac Sim 6.2 + MuJoCo-Warp (Newton) for RL on an HP Omen laptop
+site_author: Pana1v
+repo_url: https://github.com/Pana1v/robot-learning
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+
+nav:
+  - Home: index.md
+  - Quick start: quick-start.md
+  - Host setup: host-setup.md
+  - Install & sync (uv): install-sync.md
+  - Train & play: train-play.md
+  - TensorBoard: tensorboard.md
+  - Performance & power: performance-tuning.md
+  - Physics backends: physics-backends.md
+  - Custom tasks: custom-tasks.md
+  - Docker: docker.md
+  - Colab & Kaggle (free GPU): colab-kaggle.md
+  - VLA pipeline: vla-pipeline.md
+  - Troubleshooting: troubleshooting.md
+  - Upgrading: upgrading.md
+
+plugins:
+  - search

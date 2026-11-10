@@ -111,6 +111,18 @@ docker-enter: ## shell into a running container: make docker-enter P=kitless|bas
 docker-stop: ## stop a container: make docker-stop P=kitless|base
 	cd $(LAB) && python3 docker/container.py stop $(or $(P),base)
 
+##@ Docs
+.PHONY: docs docs-build docs-install
+
+docs-install: ## install mkdocs + material theme
+	uv pip install mkdocs mkdocs-material
+
+docs: ## serve the mkdocs documentation site locally (http://127.0.0.1:8000)
+	mkdocs serve
+
+docs-build: ## build the static mkdocs site into site/
+	mkdocs build
+
 ##@ Help
 .PHONY: help
 help:
