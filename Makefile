@@ -114,14 +114,19 @@ docker-stop: ## stop a container: make docker-stop P=kitless|base
 ##@ Docs
 .PHONY: docs docs-build docs-install
 
-docs-install: ## install mkdocs + material theme (system-wide)
-	uv pip install --system mkdocs mkdocs-material
+DOCS_VENV := $(CURDIR)/.venv-docs
+DOCS_MKDOCS := $(DOCS_VENV)/bin/mkdocs
+
+docs-install: ## install mkdocs + material theme into a dedicated venv
+	test -d $(DOCS_VENV) || python3 -m venv $(DOCS_VENV)
+	$(DOCS_VENV)/bin/pip install --upgrade pip
+	$(DOCS_VENV)/bin/pip install mkdocs mkdocs-material
 
 docs: ## serve the mkdocs documentation site locally (http://127.0.0.1:8000)
-	mkdocs serve
+	$(DOCS_MKDOCS) serve
 
 docs-build: ## build the static mkdocs site into site/
-	mkdocs build
+	$(DOCS_MKDOCS) build
 
 ##@ Help
 .PHONY: help
