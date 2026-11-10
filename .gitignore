@@ -23,3 +23,6 @@ IsaacLab/dist/
 .idea/
 .vscode/
 *.swp
+
+# Local Qwen Code configuration (not project code)
+.qwen/
