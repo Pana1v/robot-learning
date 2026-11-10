@@ -45,6 +45,7 @@ nav:
   - Docker: docker.md
   - Colab & Kaggle (free GPU): colab-kaggle.md
   - VLA pipeline: vla-pipeline.md
+  - Career path: career-path.md
   - Troubleshooting: troubleshooting.md
   - Upgrading: upgrading.md
 
