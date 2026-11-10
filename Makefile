@@ -114,8 +114,8 @@ docker-stop: ## stop a container: make docker-stop P=kitless|base
 ##@ Docs
 .PHONY: docs docs-build docs-install
 
-docs-install: ## install mkdocs + material theme
-	uv pip install mkdocs mkdocs-material
+docs-install: ## install mkdocs + material theme (system-wide)
+	uv pip install --system mkdocs mkdocs-material
 
 docs: ## serve the mkdocs documentation site locally (http://127.0.0.1:8000)
 	mkdocs serve
