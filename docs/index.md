@@ -5,9 +5,10 @@ This repo is a thin uv-based front end over [Isaac Lab 3.0](https://github.com/i
 ## Contents
 
 - [Quick start](quick-start.md)
+- [Launch a task](launch-tasks.md)
+- [Train & play](train-play.md)
 - [Host setup (one-time sudo)](host-setup.md)
 - [Install & sync (uv)](install-sync.md)
-- [Train & play](train-play.md)
 - [TensorBoard](tensorboard.md)
 - [Performance & power tuning](performance-tuning.md)
 - [Physics backends](physics-backends.md)
@@ -16,7 +17,6 @@ This repo is a thin uv-based front end over [Isaac Lab 3.0](https://github.com/i
 - [Docker fallbacks](docker.md)
 - [Free cloud GPU: Colab & Kaggle](colab-kaggle.md)
 - [VLA pipeline: demos → remote fine-tune → local inference](vla-pipeline.md)
-- [Career switch: robotics & AI learning path](career-path.md)
 - [Troubleshooting & traps](troubleshooting.md)
 - [Upgrading Isaac Lab](upgrading.md)
 
