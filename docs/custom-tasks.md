@@ -43,3 +43,9 @@ make play  TASK=MyTask-v0
 The `isaaclab train/play` CLI calls `load_external_tasks()`, which loads all `isaaclab.tasks` entry points before resolving the task ID from the Gym registry.
 
 The Makefile maps `TASK`/`PHYSICS`/`RL`/`NUM_ENVS`/`VIZ`/`ARGS` directly to the underlying `isaaclab` command, so no Makefile changes are needed.
+
+The repo's `my_robot_tasks/` package is itself an example of this pattern — it registers four LIBERO-style manipulation tasks (`Libero-PickCube-Direct`, `Libero-PlaceCube-Direct`, `Libero-TransferCube-Direct`, `Libero-PushCube-Direct`) via the `isaaclab.tasks` entry point and runs them with:
+
+```bash
+make train TASK=Libero-PickCube-Direct
+```
