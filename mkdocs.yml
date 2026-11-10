@@ -34,9 +34,10 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Quick start: quick-start.md
+  - Launch a task: launch-tasks.md
+  - Train & play: train-play.md
   - Host setup: host-setup.md
   - Install & sync (uv): install-sync.md
-  - Train & play: train-play.md
   - TensorBoard: tensorboard.md
   - Performance & power: performance-tuning.md
   - Physics backends: physics-backends.md
@@ -45,7 +46,6 @@ nav:
   - Docker: docker.md
   - Colab & Kaggle (free GPU): colab-kaggle.md
   - VLA pipeline: vla-pipeline.md
-  - Career path: career-path.md
   - Troubleshooting: troubleshooting.md
   - Upgrading: upgrading.md
 

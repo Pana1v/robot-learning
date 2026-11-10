@@ -82,11 +82,16 @@ Hydra overrides: `ARGS="agent.max_iterations=300"`.
 
 ## Custom tasks
 
-`my_robot_tasks/` is an external package registered via the `isaaclab.tasks` entry point in `pyproject.toml`. Install it editable into the uv env, then:
+`my_robot_tasks/` is an external package registered via the `isaaclab.tasks` entry point in `pyproject.toml`. It includes:
+
+- `MyRobot-Cartpole-Direct` — cartpole balancing with HDF5 demo recording
+- `Libero-PickCube-Direct`, `Libero-PlaceCube-Direct`, `Libero-TransferCube-Direct`, `Libero-PushCube-Direct` — LIBERO-style tabletop manipulation (Franka Panda, MuJoCo-Warp)
+
+Install it editable into the uv env, then:
 
 ```bash
-make train TASK=MyTask-ID
-make play  TASK=MyTask-ID
+make train TASK=Libero-PickCube-Direct
+make play  TASK=Libero-PickCube-Direct
 ```
 
 No Makefile changes needed — `TASK`/`PHYSICS`/`RL`/`NUM_ENVS`/`VIZ`/`ARGS` map straight to `isaaclab`.
