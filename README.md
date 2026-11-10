@@ -7,9 +7,25 @@ Isaac Lab 3.0 + Isaac Sim 6.2 + MuJoCo-Warp (Newton) on an HP Omen laptop
 robot-learning/
   IsaacLab/          upstream v3.0.0 checkout, untouched (git pull / checkout to upgrade)
   Makefile           thin front end, every target prints the real uv/docker command
+  pyproject.toml     packaging (name: robot-learning, v0.1.0) + mkdocs docs extra
+  mkdocs.yml         mkdocs material site config (make docs)
+  docs/              full documentation (14 guides)
   host/setup-host.sh one-time sudo: 20 GB swap, Docker GPU runtime
   host/power.sh      performance mode, Omen GPU boost, power status
+  my_robot_tasks/    external Isaac Lab tasks package (isaaclab.tasks entry point)
 ```
+
+## Documentation
+
+Full guides live in `docs/` and are built with [mkdocs-material](https://squidfunk.github.io/mkdocs-material/):
+
+```bash
+make docs-install   # install mkdocs + material theme
+make docs           # serve locally at http://127.0.0.1:8000
+make docs-build     # build static site into site/
+```
+
+The public repo is at `https://github.com/Pana1v/robot-learning`.
 
 ## Quick start
 
@@ -70,6 +86,20 @@ whole GPU goes to parallel environments.
 
 Hydra style overrides go in `ARGS` too, e.g. `ARGS="agent.max_iterations=300"`.
 
+## Custom tasks
+
+Custom Isaac Lab tasks live in `my_robot_tasks/` as an external Python package
+(registered via the `isaaclab.tasks` entry point in `pyproject.toml`). Install it
+editable into the uv environment, then run:
+
+```bash
+make train TASK=MyTask-ID
+make play  TASK=MyTask-ID
+```
+
+No Makefile changes are needed — `TASK`/`PHYSICS`/`RL`/`NUM_ENVS`/`VIZ`/`ARGS`
+map straight to the underlying `isaaclab` command.
+
 ## Isaac Sim
 
 ```bash
@@ -118,6 +148,9 @@ make docker-enter P=base
 cd IsaacLab && git fetch --tags && git checkout v3.0.1   # whatever is newest
 cd .. && make sync          # or sync-sim
 ```
+
+The `pyproject.toml` version and docs are versioned in this repo; bump them when
+you make breaking changes to the wrapper.
 
 ## Why uv and not pixi
 
