@@ -31,4 +31,13 @@ make train TASK=Isaac-Velocity-Flat-UnitreeGo2 NUM_ENVS=2048
 make play  TASK=Isaac-Velocity-Flat-UnitreeGo2
 ```
 
+Or a LIBERO-style manipulation task:
+
+```bash
+make train TASK=Libero-PickCube-Direct
+make train TASK=Libero-PlaceCube-Direct
+make train TASK=Libero-TransferCube-Direct
+make train TASK=Libero-PushCube-Direct
+```
+
 Logs and checkpoints go to `logs/rsl_rl/<experiment>/<timestamp>/`.

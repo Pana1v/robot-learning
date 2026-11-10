@@ -41,6 +41,7 @@ nav:
   - Performance & power: performance-tuning.md
   - Physics backends: physics-backends.md
   - Custom tasks: custom-tasks.md
+  - LIBERO manipulation tasks: libero-tasks.md
   - Docker: docker.md
   - Colab & Kaggle (free GPU): colab-kaggle.md
   - VLA pipeline: vla-pipeline.md
