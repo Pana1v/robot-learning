@@ -81,12 +81,13 @@ class TestBarnScenarios(unittest.TestCase):
         try:
             obs_space = env.observation_space
             act_space = env.action_space
-            # Isaac Lab 3.0 batches the observation space to (num_envs, obs_dim).
+            # Isaac Lab 3.0 batches spaces to (num_envs, ...).
             self.assertEqual(obs_space.shape, (4, 71))
             self.assertEqual(obs_space.shape[-1], 71)
-            self.assertEqual(act_space.shape, (2,))
-            # Action bounds are [-1, 1].
-            low, high = act_space.low, act_space.high
+            self.assertEqual(act_space.shape, (4, 2))
+            self.assertEqual(env.single_action_space.shape, (2,))
+            # Action bounds are [-1, 1] on the single-env space.
+            low, high = env.single_action_space.low, env.single_action_space.high
             self.assertTrue(bool((low == -1.0).all()) and bool((high == 1.0).all()))
         finally:
             env.close()
