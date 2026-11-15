@@ -32,6 +32,9 @@ make train TASK=Isaac-Velocity-Flat-UnitreeGo2 NUM_ENVS=2048
 # LIBERO-style manipulation (Franka pick cube)
 make train TASK=Libero-PickCube-Direct
 
+# BARN Navigation Challenge (Clearpath Jackal, static obstacle world)
+make train TASK=Isaac-BARN-Nav-Direct NUM_ENVS=256
+
 # Replay the latest policy
 make play TASK=Isaac-Cartpole-Direct
 
