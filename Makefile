@@ -18,6 +18,7 @@ PHYSICS  ?= mjwarp          # mjwarp | physx | ovphysx
 RL       ?= rsl_rl          # rsl_rl | skrl | sb3 | rl_games (non-rsl need: make sync EXTRAS=all)
 NUM_ENVS ?=                 # empty = task default
 VIZ      ?=                 # empty = headless (fastest). newton_gl | kit | viser | rerun
+RENDERER ?=                 # camera renderer, empty = task default. newton_renderer | isaacsim_rtx | ovrtx
 CKPT     ?= latest
 ARGS     ?=                 # anything else, passed straight to isaaclab
 
@@ -35,9 +36,15 @@ else
   $(error PHYSICS must be mjwarp, physx or ovphysx)
 endif
 
+REND_SEL := $(if $(strip $(RENDERER)),renderer=$(strip $(RENDERER)))
+
 COMMON := --rl_library $(strip $(RL)) --task $(strip $(TASK)) \
           $(if $(strip $(NUM_ENVS)),--num_envs $(strip $(NUM_ENVS))) \
           $(if $(strip $(VIZ)),--viz $(strip $(VIZ)))
+
+# uv sync is exact and removes packages not in IsaacLab's lockfile, including our task
+# package. Without its entry point, isaaclab train cannot find Libero-*/BARN tasks. Re-add it after every sync.
+TASKS_INSTALL := uv pip install --python $(LAB)/.venv/bin/python --no-deps -e $(CURDIR)
 
 # Isaac Sim asks for the EULA interactively on first launch; accept it up front
 export OMNI_KIT_ACCEPT_EULA := YES
@@ -51,6 +58,7 @@ host: ## one-time sudo setup: 20 GB swap + Docker GPU runtime
 
 sync: ## install kit-less Isaac Lab (Newton + MuJoCo-Warp, PyTorch cu130). EXTRAS="all video" to add more
 	cd $(LAB) && uv sync --extra video $(foreach e,$(EXTRAS),--extra $(e))
+	$(TASKS_INSTALL)
 
 clean-logs: ## clear all local checkpoints and tensorboard logs
 	rm -rf logs/*
@@ -60,6 +68,8 @@ check-cuda: ## quick verification of CUDA GPU runtime & memory status
 
 sync-sim: ## add Isaac Sim 6.2 (pip, ~15 GB) on top of the kit-less env
 	cd $(LAB) && uv sync --extra video --extra isaacsim $(foreach e,$(EXTRAS),--extra $(e))
+	$(TASKS_INSTALL)
+	test -e host/compat-lib/libxml2.so.2 || ./host/compat-libs.sh
 
 doctor: ## check GPU, power, swap, docker, torch/warp/mujoco versions
 	@./host/power.sh status; echo
@@ -78,11 +88,11 @@ envs: ## list tasks and which physics/renderer presets each supports
 	$(UV) --no-sync isaaclab list_envs --show_presets $(ARGS)
 
 train: ## train TASK with PHYSICS backend, headless unless VIZ is set
-	$(UV) $(PHYS_EXTRA) isaaclab train $(COMMON) $(ARGS) $(PHYS_SEL)
+	$(UV) $(PHYS_EXTRA) isaaclab train $(COMMON) $(ARGS) $(PHYS_SEL) $(REND_SEL)
 
 play: ## replay the latest (or CKPT=path) policy with a viewer
 	$(UV) $(PHYS_EXTRA) isaaclab play $(COMMON) \
-	  $(if $(strip $(VIZ)),,--viz newton_gl) --checkpoint $(strip $(CKPT)) $(ARGS) $(PHYS_SEL)
+	  $(if $(strip $(VIZ)),,--viz newton_gl) --checkpoint $(strip $(CKPT)) $(ARGS) $(PHYS_SEL) $(REND_SEL)
 
 tb: ## tensorboard over all runs
 	$(UV) --no-sync tensorboard --logdir $(CURDIR)/logs --bind_all
@@ -91,10 +101,38 @@ power: ## performance profile + GPU status (sudo ./host/power.sh boost for Omen 
 	./host/power.sh train
 
 ##@ Isaac Sim
-.PHONY: sim
+.PHONY: sim compat-libs
 
-sim: ## open the Isaac Sim 6.2 GUI (needs make sync-sim)
-	$(UV) --extra isaacsim isaacsim $(ARGS)
+# Experience file. isaacsim.exp.full.newton swaps PhysX for Newton physics in the GUI.
+SIM_EXP ?= isaacsim.exp.full
+
+# The desktop runs on the AMD iGPU (PRIME on-demand). Without these, the viewport is rendered on
+# the RTX 5050 and then copied to the iGPU every frame. NVIDIA_only also stops Vulkan from
+# enumerating the iGPU as a second device.
+# host/compat-lib holds libxml2.so.2 + ICU 74 from Ubuntu 24.04 (make compat-libs), which 26.04 dropped.
+SIM_ENV := LD_LIBRARY_PATH=$(CURDIR)/host/compat-lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia
+
+# Viewport performance on 8 GB VRAM. These only affect the RTX viewport, not physics. Shadows and
+# direct lighting stay on so depth cues remain readable. SIM_QUALITY=1 drops all of these.
+#   reflections / translucency / indirect diffuse / AO: the costly ray-traced passes
+#   dlssg: DLSS frame generation (Blackwell). GUI only: Kit disables it because it breaks SDG captures
+#   useFabricSceneDelegate: render straight from Fabric, skipping the USD -> Hydra sync each frame
+SIM_FAST := \
+	--/rtx/reflections/enabled=false \
+	--/rtx/translucency/enabled=false \
+	--/rtx/indirectDiffuse/enabled=false \
+	--/rtx/ambientOcclusion/enabled=false \
+	--/rtx/directLighting/sampledLighting/enabled=true \
+	--/rtx/post/dlss/execMode=0 \
+	--/rtx-transient/dlssg/enabled=true \
+	--/app/useFabricSceneDelegate=true \
+	--/rtx/hydra/readTransformsFromFabricInRenderDelegate=true
+
+compat-libs: ## fetch libxml2.so.2 + ICU 74 that Isaac Sim needs on Ubuntu 26.04 (no sudo)
+	./host/compat-libs.sh
+
+sim: ## open the Isaac Sim 6.2 GUI tuned for this laptop. SIM_QUALITY=1 for stock look, SIM_EXP=isaacsim.exp.full.newton for Newton physics
+	$(SIM_ENV) $(UV) --extra isaacsim isaacsim $(SIM_EXP) $(if $(SIM_QUALITY),,$(SIM_FAST)) $(ARGS)
 
 ##@ Docker (fallback if the native install misbehaves on Ubuntu 26.04)
 .PHONY: docker-kitless docker-sim docker-enter docker-stop

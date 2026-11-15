@@ -27,3 +27,6 @@ IsaacLab/dist/
 
 # Local Qwen Code configuration (not project code)
 .qwen/
+
+# Ubuntu 24.04 libs fetched by host/compat-libs.sh
+host/compat-lib/
