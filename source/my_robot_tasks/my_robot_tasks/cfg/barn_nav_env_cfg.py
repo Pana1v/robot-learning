@@ -99,10 +99,16 @@ class BarnNavSceneCfg(InteractiveSceneCfg):
 
     # Contact sensor on the robot body, filtered against per-env obstacle meshes.
     # Reads force_matrix_w (filtered), never net_forces_w (ground support fires every step).
+    # create_prim_from_mesh authors the Xform at {prim_path} and the mesh+collider at
+    # {prim_path}/mesh, plus a visualMaterial sibling. The filter must name exactly the
+    # collider prim ({prim_path}/mesh); a wildcard like {prim_path}/* matches the
+    # material sibling too (2 entries), which PhysX rejects (expects 1 collider per
+    # filter pattern) and leaves force_matrix_w as None, silently disabling collision.
     contact = ContactSensorCfg(
         prim_path="{ENV_REGEX_NS}/Robot",
         update_period=0.02,
         history_length=0,
+        filter_prim_paths_expr=["{ENV_REGEX_NS}/Obstacles/mesh"],
         debug_vis=False,
     )
 
