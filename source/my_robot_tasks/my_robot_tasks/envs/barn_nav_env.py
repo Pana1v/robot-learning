@@ -142,6 +142,9 @@ class BarnNavEnv(DirectRLEnv):
             device=self.device,
             dtype=torch.long,
         )
+        table = _load_barn_static_table()
+        self._world_centers: dict[int, np.ndarray] = table[0] if table else {}
+        self._world_path_lengths: dict[int, float] = table[1] if table else {}
         self._create_obstacle_meshes()
         self._attach_robot_visuals()
 
