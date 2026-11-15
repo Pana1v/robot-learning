@@ -195,3 +195,20 @@ class BarnNavEnvCfg(DirectRLEnvCfg):
 
     def __post_init__(self):
         self.sim.default_visualizer_cfg = VisualizerCfg(eye=(8.0, 0.0, 6.0))
+
+        # Spawn the robot at the BARN start pose, not at the world origin. The
+        # upstream challenge uses one fixed start for every static world, so the
+        # pose lives in the asset's init_state and scene.reset() reapplies it.
+        # Without this the robot spawns inside world 0's obstacle grid.
+        half_yaw = self.start_yaw / 2.0
+        self.scene.robot.init_state.pos = (
+            float(self.start_pos[0]),
+            float(self.start_pos[1]),
+            JACKAL_ROOT_Z,
+        )
+        self.scene.robot.init_state.rot = (
+            0.0,
+            0.0,
+            math.sin(half_yaw),
+            math.cos(half_yaw),
+        )
