@@ -33,7 +33,7 @@ from isaaclab.sim import SimulationCfg
 from isaaclab.utils import configclass
 from isaaclab.visualizers import VisualizerCfg
 
-from my_robot_tasks.cfg.jackal_cfg import JACKAL_CFG
+from my_robot_tasks.cfg.jackal_cfg import JACKAL_CFG, JACKAL_ROOT_Z
 
 
 ##
