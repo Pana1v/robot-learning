@@ -428,15 +428,10 @@ class BarnNavEnv(DirectRLEnv):
 
         super()._reset_idx(env_ids)
 
-        num_resets = len(env_ids)
-
         # --- Place robot at start pose (D7) ---
-        # Note: scene.reset() (called via super()._reset_idx) already places the
-        # robot at its configured initial pose from RigidObjectCfg.init_state.
-        # Direct root_view.set_transforms/set_velocities calls are skipped here
-        # because this PhysX TensorAPI build rejects both wp.transformf arrays
-        # (KeyError: transformf) and float32 pose arrays
-        # ("Failed to set rigid body transforms in backend").
+        # scene.reset() (called via super()._reset_idx) reapplies the robot's
+        # init_state, which BarnNavEnvCfg sets to the BARN start pose and yaw.
+        # The upstream challenge uses one fixed start for every static world.
 
         # Reset rate-limiter state and previous actions (D7 trap: stale values)
         self._prev_actions[env_ids] = 0.0
