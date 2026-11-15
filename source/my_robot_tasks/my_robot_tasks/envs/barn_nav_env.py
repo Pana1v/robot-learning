@@ -258,22 +258,9 @@ class BarnNavEnv(DirectRLEnv):
             (vx_world, vy_world, vz_world, wx_world, wy_world, wz_world), dim=-1
         )
 
-        # Write velocity directly through the PhysX root view. write_root_velocity_to_sim_index
-        # passes the ProxyArray-backed root_com_vel_w as a wp.launch output, which warp 1.17
-        # rejects. Velocities are linear-first (vx, vy, vz, wx, wy, wz).
-        # Note: set_velocities fails at the PhysX backend level in this Isaac Sim build
-        # ("Failed to set rigid body velocities in backend"), so wrap in try/except to keep
-        # the env functional for rendering (robot stays at its start pose under gravity).
-        try:
-            all_env_ids = wp.array(
-                torch.arange(self.num_envs, device=self.device), dtype=wp.int32, device=self.device
-            )
-            self.robot.root_view.set_velocities(
-                wp.array(root_vel, dtype=wp.float32, device=self.device), indices=all_env_ids
-            )
-        except Exception as e:
-            print(f"[warn] set_velocities skipped: {e}")
-        self.robot.data._reset_velocity()
+        # Write the root center-of-mass velocity. Velocities are linear-first
+        # (vx, vy, vz, wx, wy, wz), matching write_root_velocity_to_sim_index.
+        self.robot.write_root_velocity_to_sim_index(root_velocity=root_vel, env_ids=None)
 
     # --------------------------------------------------------------------- #
     # D1: per-env obstacle meshes
