@@ -29,6 +29,10 @@ from isaaclab.assets import RigidObjectCfg
 # Visual-only Clearpath Jackal USD (physics stripped).
 JACKAL_VISUAL_USD = Path(__file__).resolve().parents[1] / "assets" / "jackal_visual.usd"
 
+# Height of the robot root above the ground plane. The collision envelope is
+# 0.268 m tall, so half of it puts the wheels exactly on the ground at z = 0.
+JACKAL_ROOT_Z = 0.134
+
 # Local z offset applied to the visual child so the Jackal wheels rest on the
 # ground plane. The asset's wheel contact plane sits at asset-frame z =
 # -0.0653 m and the robot root is initialized at z = 0.134 m, so the child
@@ -57,7 +61,7 @@ JACKAL_CFG = RigidObjectCfg(
         visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.1, 0.1, 0.1)),
     ),
     init_state=RigidObjectCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 0.134),
+        pos=(0.0, 0.0, JACKAL_ROOT_Z),
         lin_vel=(0.0, 0.0, 0.0),
         ang_vel=(0.0, 0.0, 0.0),
     ),
