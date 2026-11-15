@@ -76,7 +76,9 @@ def _load_barn_static_table() -> tuple[dict[int, np.ndarray], dict[int, float]] 
     data = np.load(npz_path, allow_pickle=True)
     centers_all = data["centers"]
     counts = data["num_cylinders"]
-    return {int(i): centers_all[i][: int(counts[i])] for i in range(len(counts))}
+    centers = {int(i): centers_all[i][: int(counts[i])] for i in range(len(counts))}
+    path_lengths = {int(i): float(data["path_lengths"][i]) for i in range(len(counts))}
+    return centers, path_lengths
 
 
 class BarnNavEnv(DirectRLEnv):
