@@ -5,8 +5,8 @@ Per PLAN.md Section 7: gate results, evidence, verified claims with oracles, ope
 ## Environment (observed, not assumed)
 
 - Host GPU: NVIDIA GeForce RTX 5050 Laptop GPU; `nvidia-smi -L` OK; `/dev/nvidia0` present.
-- Isaac Lab source: `/home/panav/robot-learning/IsaacLab` (read-only tree, untouched). `isaaclab.sh` present; emits deprecation warning, otherwise works.
-- Python: `/home/panav/robot-learning/IsaacLab/.venv/bin/python` 3.12.16. `pip` bootstrapped via `ensurepip`; setuptools copied in; editable install `robot-learning-0.1.0` OK. `TMPDIR=/home/panav/happy/Bots/research_scout/tmp` required (`/tmp` read-only).
+- Isaac Lab source: `/home/panav/isaaclab-barn/IsaacLab` (read-only tree, untouched). `isaaclab.sh` present; emits deprecation warning, otherwise works.
+- Python: `/home/panav/isaaclab-barn/IsaacLab/.venv/bin/python` 3.12.16. `pip` bootstrapped via `ensurepip`; setuptools copied in; editable install `robot-learning-0.1.0` OK. `TMPDIR=/home/panav/happy/Bots/research_scout/tmp` required (`/tmp` read-only).
 - **Isaac Sim 6.2 full runtime is NOT available in this environment.** `import isaacsim` yields a namespace stub (`__file__ is None`); `isaacsim.simulation_app` does not exist (`ModuleNotFoundError`). `./IsaacLab/isaaclab.sh -p <script>` fails: "[ERROR] Isaac Sim is not installed or not found on PYTHONPATH." The uv cache holds only `extscache` fragments (Omniverse extension caches, cp312) from an aborted `isaacsim` wheel install — no `python.sh`, `kit`, or `SimulationApp`. GPU exists but Kit/PhysX cannot boot here.
 
 ## Phase 0 — Preflight (Gate 0: PARTIAL / BLOCKED on sim baselines)
