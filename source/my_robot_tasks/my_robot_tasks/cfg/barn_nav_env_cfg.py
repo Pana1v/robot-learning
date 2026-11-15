@@ -70,10 +70,23 @@ class BarnNavSceneCfg(InteractiveSceneCfg):
     nothing to simulate.
     """
 
+    # Plain black floor. GroundPlaneCfg only exposes a `color` tint on the
+    # theGrid shader's diffuse_tint, which leaves the grid's specular and
+    # roughness pattern visible. A dedicated static-collider cuboid with a
+    # black PreviewSurface material renders as a flat black floor instead.
+    # No rigid_props -> static collider; the top face sits at z = 0.
     ground = AssetBaseCfg(
         prim_path="/World/ground",
-        spawn=sim_utils.GroundPlaneCfg(),
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(0.0, 0.0, 0.0)),
+        spawn=sim_utils.CuboidCfg(
+            size=(60.0, 60.0, 0.05),  # [m]
+            collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
+            visual_material=sim_utils.PreviewSurfaceCfg(
+                diffuse_color=(0.0, 0.0, 0.0),
+                roughness=0.9,
+                metallic=0.0,
+            ),
+        ),
+        init_state=AssetBaseCfg.InitialStateCfg(pos=(0.0, 0.0, -0.025)),
     )
 
     robot: RigidObjectCfg = JACKAL_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
