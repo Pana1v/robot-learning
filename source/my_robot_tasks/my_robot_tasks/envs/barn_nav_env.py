@@ -55,15 +55,16 @@ if TYPE_CHECKING:
 # Candidate locations for the offline data table built by scripts/build_barn_data.py.
 _BARN_STATIC_NPZ_CANDIDATES = (
     Path.cwd() / "data" / "barn_static.npz",
-    Path("/home/panav/robot-learning/data/barn_static.npz"),
-    Path("/home/panav/robot-learning/source/my_robot_tasks/data/barn_static.npz"),
+    Path("/home/panav/isaaclab-barn/data/barn_static.npz"),
+    Path("/home/panav/isaaclab-barn/source/my_robot_tasks/data/barn_static.npz"),
 )
 
 
-def _load_barn_static_centers() -> dict[int, np.ndarray] | None:
-    """Load per-world cylinder centers from barn_static.npz.
+def _load_barn_static_table() -> tuple[dict[int, np.ndarray], dict[int, float]] | None:
+    """Load the offline BARN table built by scripts/build_barn_data.py.
 
-    Returns {world_idx: (N, 2) float32 centers} or None if the table is missing.
+    Returns ({world_idx: (N, 2) centers}, {world_idx: planned path length [m]})
+    or None if the table is missing.
     """
     npz_path = None
     for candidate in _BARN_STATIC_NPZ_CANDIDATES:
