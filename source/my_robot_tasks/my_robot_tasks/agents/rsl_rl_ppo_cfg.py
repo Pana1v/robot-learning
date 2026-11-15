@@ -30,6 +30,8 @@ class DemoCartpoleDirectPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         hidden_dims=[32, 32],
         activation="elu",
         obs_normalization=False,
+        # rsl_rl needs an explicit action distribution for a stochastic PPO actor
+        distribution_cfg=RslRlMLPModelCfg.GaussianDistributionCfg(init_std=1.0),
     )
     critic = RslRlMLPModelCfg(
         hidden_dims=[32, 32],
@@ -64,6 +66,8 @@ class BarnNavDirectPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         hidden_dims=[256, 128, 64],
         activation="elu",
         obs_normalization=True,
+        # rsl_rl needs an explicit action distribution for a stochastic PPO actor
+        distribution_cfg=RslRlMLPModelCfg.GaussianDistributionCfg(init_std=1.0),
     )
     critic = RslRlMLPModelCfg(
         hidden_dims=[256, 128, 64],
