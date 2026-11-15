@@ -22,7 +22,7 @@ import numpy as np
 import torch
 
 from isaaclab.envs import DirectRLEnv
-from isaaclab.utils.math import sample_uniform
+from isaaclab.utils.math import sample_uniform, wrap_to_pi
 
 if TYPE_CHECKING:
     from .cfg.demo_cartpole_env_cfg import DemoCartpoleEnvCfg
@@ -219,8 +219,6 @@ def compute_rewards(
     reset_terminated: torch.Tensor,
     step_dt: float,
 ) -> torch.Tensor:
-    from isaaclab.utils.math import wrap_to_pi
-
     pole_pos = wrap_to_pi(pole_pos)
     rew_alive = rew_scale_alive * (1.0 - reset_terminated.float())
     rew_termination = rew_scale_terminated * reset_terminated.float()

@@ -24,6 +24,7 @@ from isaaclab.utils import configclass
 from isaaclab.visualizers import VisualizerCfg
 
 from isaaclab_assets.robots.cartpole import CARTPOLE_CFG
+from isaaclab_tasks.utils.presets import MultiBackendRendererCfg
 
 
 @configclass
@@ -48,6 +49,8 @@ class DemoCartpoleSceneCfg(InteractiveSceneCfg):
             focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
         ),
         offset=CameraCfg.OffsetCfg(pos=(3.0, 0.0, 2.5), rot=(0.5, -0.5, 0.5, -0.5)),  # (x, y, z, w)
+        # renderer=newton_renderer (default, no Kit) | isaacsim_rtx | ovrtx
+        renderer_cfg=MultiBackendRendererCfg(),
     )
 
 

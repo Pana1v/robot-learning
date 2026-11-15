@@ -34,11 +34,18 @@ class LiberoManipulationEnv(DirectRLEnv):
     cfg: LiberoEnvCfg
 
     def __init__(self, cfg: LiberoEnvCfg, render_mode: str | None = None, **kwargs):
+        # Decide on the camera before super() builds the scene, so CLI overrides of
+        # record_demos are already applied. No camera means no renderer is created at all.
+        if not cfg.record_demos:
+            cfg.scene.camera = None
+        elif cfg.scene.num_envs != 1:
+            # _reset_idx flushes one shared episode buffer, which only makes sense for a single env.
+            raise ValueError(f"record_demos needs env.scene.num_envs=1, got {cfg.scene.num_envs}")
         super().__init__(cfg, render_mode, **kwargs)
 
         self.robot = self.scene["robot"]
         self.cube = self.scene["cube"]
-        self.camera = self.scene["camera"]
+        self.camera = self.scene["camera"] if cfg.record_demos else None
 
         # Franka arm dof indices (first 7 joints are arm, last 2 are fingers)
         self._arm_dof_ids, _ = self.robot.find_joints(
@@ -89,6 +96,7 @@ class LiberoManipulationEnv(DirectRLEnv):
 
         # Gripper: binary open/close
         gripper_target = torch.where(gripper_action > 0, 0.04, 0.0)  # open or close
+        gripper_target = gripper_target.unsqueeze(-1).expand(-1, len(self._gripper_dof_ids))  # one per finger
         self.robot.set_joint_position_target(target=gripper_target, joint_ids=self._gripper_dof_ids)
 
     def _get_observations(self) -> dict:
@@ -114,10 +122,10 @@ class LiberoManipulationEnv(DirectRLEnv):
             dim=-1,
         )
 
-        # Record for demos
-        self._episode_images.append(self.camera.data.output["rgb"].clone())
-        self._episode_states.append(obs.clone())
-        self._episode_actions.append(self.actions.clone())
+        if self.cfg.record_demos:
+            self._episode_images.append(self.camera.data.output["rgb"].clone())
+            self._episode_states.append(obs.clone())
+            self._episode_actions.append(self.actions.clone())
 
         return {"policy": obs}
 
@@ -154,6 +162,8 @@ class LiberoManipulationEnv(DirectRLEnv):
         # Action penalty
         rewards += self.cfg.rew_scale_action_penalty * torch.sum(torch.square(self.actions), dim=-1)
 
+        if self.cfg.record_demos:
+            self._episode_rewards.append(rewards.clone())
         return rewards
 
     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
@@ -178,6 +188,8 @@ class LiberoManipulationEnv(DirectRLEnv):
         else:
             success = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
 
+        if self.cfg.record_demos:
+            self._episode_dones.append(success | time_out)
         return success, time_out
 
     def _reset_idx(self, env_ids: Sequence[int] | None):

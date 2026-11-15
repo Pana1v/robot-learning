@@ -44,5 +44,8 @@ all = [
 my-robot-tasks = "my_robot_tasks"
 
 [tool.setuptools]
-package-dir = {"" = "."}
-packages = ["my_robot_tasks", "my_robot_tasks.*"]
+package-dir = {"" = "source/my_robot_tasks"}
+
+[tool.setuptools.packages.find]
+where = ["source/my_robot_tasks"]
+include = ["my_robot_tasks*"]

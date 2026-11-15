@@ -16,11 +16,27 @@ import gymnasium as gym
 
 from . import agents
 from . import envs
+from .cfg.barn_nav_env_cfg import BarnNavEnvCfg
 from .cfg.libero_env_cfg import (
     LiberoPickCubeEnvCfg,
     LiberoPlaceCubeEnvCfg,
     LiberoPushCubeEnvCfg,
     LiberoTransferCubeEnvCfg,
+)
+
+##
+# Register Gym environments -- BARN navigation task (port of ICRA BARN Challenge).
+##
+
+gym.register(
+    id="Isaac-BARN-Nav-Direct",
+    entry_point=f"{__name__}.envs.barn_nav_env:BarnNavEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.cfg.barn_nav_env_cfg:BarnNavEnvCfg",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BarnNavDirectPPORunnerCfg",
+        "default_agent": "rsl_rl",
+    },
 )
 
 ##
