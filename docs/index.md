@@ -14,6 +14,7 @@ This repo is a thin uv-based front end over [Isaac Lab 3.0](https://github.com/i
 - [Physics backends](physics-backends.md)
 - [Custom tasks (external package)](custom-tasks.md)
 - [LIBERO-style manipulation tasks](libero-tasks.md)
+- [BARN Navigation Challenge](barn-nav.md)
 - [Docker fallbacks](docker.md)
 - [Free cloud GPU: Colab & Kaggle](colab-kaggle.md)
 - [VLA pipeline: demos → remote fine-tune → local inference](vla-pipeline.md)
