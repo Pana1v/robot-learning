@@ -34,7 +34,6 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import torch
-import warp as wp
 
 from isaaclab.envs import DirectRLEnv
 from isaaclab.assets import RigidObject
