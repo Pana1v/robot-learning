@@ -10,12 +10,30 @@ The collision envelope comes from the Jackal URDF (chassis 0.420 × 0.310 m
 plus wheels extends to about 0.46 × 0.42 m), height 0.268 m, mass 17 kg
 from the URDF inertials. No joints or actuators: body-frame (v, ω) is
 written directly as root velocity every physics step.
+
+The cuboid above is the *physics* body only: it carries the mass, the
+inertias and the collision proxy. The renderer-visible robot is the real
+Clearpath Jackal mesh, attached as a visual-only child prim by
+BarnNavEnv._attach_robot_visuals(). The mesh asset has every physics
+schema stripped, so it contributes visuals and nothing else.
 """
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import isaaclab.sim as sim_utils
 from isaaclab.assets import RigidObjectCfg
+
+
+# Visual-only Clearpath Jackal USD (physics stripped).
+JACKAL_VISUAL_USD = Path(__file__).resolve().parents[1] / "assets" / "jackal_visual.usd"
+
+# Local z offset applied to the visual child so the Jackal wheels rest on the
+# ground plane. The asset's wheel contact plane sits at asset-frame z =
+# -0.0653 m and the robot root is initialized at z = 0.134 m, so the child
+# translate is -(0.134 - 0.0653) = -0.0687 m.
+JACKAL_VISUAL_Z_OFFSET = -0.0687
 
 
 JACKAL_CFG = RigidObjectCfg(
