@@ -117,11 +117,16 @@ class BarnNavEnv(DirectRLEnv):
         # Distance to goal at reset (for progress reward)
         self._initial_dist_to_goal = torch.zeros(self.num_envs, device=self.device)
 
-        # Optimal time for metric computation (per world, loaded from data table)
+        # Optimal time for metric computation (per world, loaded from data table).
+        # Upstream: optimal_time = path_length / 2, where path_length is the
+        # planned route through the world's cylinders, not the straight-line
+        # start-to-goal distance.
         self._optimal_time = torch.zeros(self.num_envs, device=self.device)
         for env_id in range(self.num_envs):
             wid = int(self._world_of_env[env_id])
             pl = self.cfg.optimal_path_length
+            if pl <= 0.0:
+                pl = self._world_path_lengths.get(wid, 0.0)
             if pl <= 0.0:
                 pl = float(torch.linalg.norm(self._goal_pos - self._start_pos))
             self._optimal_time[env_id] = pl / 2.0
