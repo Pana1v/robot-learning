@@ -3,7 +3,9 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+from .barn_nav_env_cfg import BarnNavEnvCfg  # noqa: F401
 from .demo_cartpole_env_cfg import DemoCartpoleEnvCfg  # noqa: F401
+from .jackal_cfg import JACKAL_CFG  # noqa: F401
 from .libero_env_cfg import (  # noqa: F401
     LiberoEnvCfg,
     LiberoPickCubeEnvCfg,
@@ -13,7 +15,9 @@ from .libero_env_cfg import (  # noqa: F401
 )
 
 __all__ = [
+    "BarnNavEnvCfg",
     "DemoCartpoleEnvCfg",
+    "JACKAL_CFG",
     "LiberoEnvCfg",
     "LiberoPickCubeEnvCfg",
     "LiberoPlaceCubeEnvCfg",
