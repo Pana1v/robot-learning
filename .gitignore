@@ -30,3 +30,9 @@ IsaacLab/dist/
 
 # Ubuntu 24.04 libs fetched by host/compat-libs.sh
 host/compat-lib/
+
+# Local scratch: agent context, third-party data clones, build metadata
+.context/
+third_party/
+*.egg-info/
+*.log
