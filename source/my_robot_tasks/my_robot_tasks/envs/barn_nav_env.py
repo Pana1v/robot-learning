@@ -286,8 +286,8 @@ class BarnNavEnv(DirectRLEnv):
         at /World/envs/env_{i}/Obstacles via create_prim_from_mesh. The MultiMeshRayCaster
         casts against these meshes and the ContactSensor is filtered against them.
         """
-        world_centers = _load_barn_static_centers()
-        if world_centers is None:
+        world_centers = self._world_centers
+        if not world_centers:
             return
 
         # trimesh and create_prim_from_mesh are Isaac Lab / optional heavy deps;
