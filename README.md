@@ -86,15 +86,41 @@ Hydra overrides: `ARGS="agent.max_iterations=300"`.
 
 - `MyRobot-Cartpole-Direct` — cartpole balancing with HDF5 demo recording
 - `Libero-PickCube-Direct`, `Libero-PlaceCube-Direct`, `Libero-TransferCube-Direct`, `Libero-PushCube-Direct` — LIBERO-style tabletop manipulation (Franka Panda, MuJoCo-Warp)
+- `Isaac-BARN-Nav-Direct` — BARN Navigation Challenge port: Clearpath Jackal drives from start to goal in a static obstacle world (ICRA challenge, ROS/Gazebo → Isaac Lab 3.0 DirectRLEnv)
 
 Install it editable into the uv env, then:
 
 ```bash
 make train TASK=Libero-PickCube-Direct
 make play  TASK=Libero-PickCube-Direct
+make train TASK=Isaac-BARN-Nav-Direct NUM_ENVS=256
 ```
 
 No Makefile changes needed — `TASK`/`PHYSICS`/`RL`/`NUM_ENVS`/`VIZ`/`ARGS` map straight to `isaaclab`.
+
+### BARN Navigation Challenge (Isaac-BARN-Nav-Direct)
+
+Port of the ICRA BARN Navigation Challenge (ROS/Gazebo) to Isaac Lab 3.0. Drives a velocity-controlled Clearpath Jackal from start pose `(-2.25, 3.0, yaw 1.57)` to goal `(-2.25, 13.0)` across 300 static obstacle worlds, avoiding collisions.
+
+| Spec | Value |
+|------|-------|
+| Observation | 71-dim (64 lidar bins + 3 goal rel + 2 base vel + 2 prev action) |
+| Action | 2-dim `[-1, 1]` → `v = 2·a0`, `ω = 4·a1` with rate limits |
+| Physics | RigidObjectCfg cuboid, `write_root_velocity_to_sim_index` (D2) |
+| Lidar | MultiMeshRayCaster, 720 beams @ 30 m, min-pooled to 64 bins (D3) |
+| Contact | ContactSensorCfg filtered to `{ENV_REGEX_NS}/Obstacles/mesh` (D4) |
+| Metric | `int(success) · OT / clip(AT, 2·OT, 8·OT)`, `OT = path_length / 2` (D9) |
+| Worlds | Static 0-299 from `third_party/the-barn-challenge@bf5a226` |
+
+Offline data: `scripts/build_barn_data.py` parses all 300 upstream worlds → `data/barn_static.npz` (centers, path lengths, optimal times per world).
+
+Diagnostics: `scripts/diag_barn.py` verifies spawn pose, contact filter, lidar vs analytic oracle, and root write paths headlessly.
+
+Reward ablation: `plot_reward_comparison.py` compares old vs new reward curves head-to-head.
+
+Unit tests: `tests/unit/test_barn_core.py` (U1-U9, pure Python, no Kit). Sim tests: `tests/sim/test_barn_scenarios.py` (S1-S8, skip until Kit boots).
+
+See `docs/barn-nav.md` for the full design (D1-D9) and `NOTES.md` for gate status.
 
 ## Isaac Sim
 
